@@ -19,10 +19,21 @@ public:
   ext_vector<int> get_avail() const { return avail; }
   bool is_avail(const ext_vector<int>& req) const { return req < avail; }
   
-  bool is_safe(int id, const ext_vector<int>& req) { return true; }
-  bool req_approved(int id, const ext_vector<int>& req) { return true; }
+  bool is_safe(int id, const ext_vector<int>& req) { return true; }   // TODO: determine if alloc is safe
+
+  bool req_approved(int id, const ext_vector<int>& req) {
+    if (req > avail) { return false; }
+
+    const Customer* c = customers[id];
+    if (c->needs_exceeded(req)) { return false; }
+
+    return is_safe(id, req);
+  }
   
-  void add_customer(Customer* c) { customers.push_back(c); }
+  void add_customer(Customer* c) {
+    customers.push_back(c);
+    avail -= c->allocated();
+  }
   
   void withdraw_resources(const ext_vector<int>& req) {
     if (!is_avail(req)) {
