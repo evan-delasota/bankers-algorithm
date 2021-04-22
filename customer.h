@@ -1,12 +1,11 @@
 //
-//  Customer.h
+//  customer.h
 //  bankers
 //
-//  Created by William McCarthy on 1011//20.
 //
 
-#ifndef customer_h
-#define customer_h
+#ifndef __CUSTOMER_H__
+#define __CUSTOMER_H__
 
 #include "bank.h"
 #include "ext_vector.h"
@@ -26,7 +25,7 @@ public:
   Customer(int index, const ext_vector<int>& allocate, const ext_vector<int>& maximum,
                   Bank* bank_=nullptr)
   : idx(index), alloc(allocate), max_(maximum), need(max_ - alloc), bank(bank_) {
-      srand (time(NULL));
+      srand ((unsigned int)time(NULL));
   }
   
   int get_id() const { return idx; }
@@ -80,4 +79,4 @@ private:
   Bank* bank;
 };
 
-#endif /* customer_h */
+#endif /* Customer_h */
