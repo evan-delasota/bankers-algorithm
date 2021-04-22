@@ -6,22 +6,22 @@
 //
 #include <iostream>
 #include <fstream>
+#include <cstring>
+#include <initializer_list>
+#include <pthread>
+
 #include "ext_vector.h"
 #include "bank.h"
 #include "customer.h"
 #include "utils.h"
-#include <cstring>
 
-
-//#include "customer.h"
-//#include "bank.h"
-//
 //
 pthread_mutex_t mutex_;  // prevents intermingled printing by threads (customers)
 //
 //
 void run_customer_bank_tests() {
   ext_vector<int> alloc = { 3, 1, 5 };
+  
   ext_vector<int> max  = { 5, 2, 6 };
   ext_vector<int> need = max - alloc;
   ext_vector<int> avail = alloc + need + ext_vector<int>({ 3, 3, 3 });
@@ -94,10 +94,14 @@ void* runner(void* param) {           // thread runner
 
   Bank* b = c->get_bank();
 
-  while (!c->needs_met()) {
+  int counter = 0;
+
+  while (!c->needs_met() && counter++ < 100) {
     ext_vector<int> req = c->create_req();
     int idx = c->get_id();
+    std::cout << "REQUEST of " << req << " for customer " << idx << " ";
     bool approved = b->req_approved(idx, req);
+    std::cout << "request was approved: " << Utils::yes_or_no(approved) << "\n";
 
     if (approved) {
       c->alloc_req(req);
@@ -113,6 +117,7 @@ void* runner(void* param) {           // thread runner
   }
   pthread_mutex_lock(&mutex_);
   std::cout << ">>>>>>>>>>>>>>> Customer thread p#" << c->get_id() << " shutting down... <<<<<<<<<<<<<<<<<\n\n";
+  b->show();
   pthread_mutex_unlock(&mutex_);
 
   pthread_exit(0);
