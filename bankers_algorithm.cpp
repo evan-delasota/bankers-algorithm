@@ -1,14 +1,11 @@
 ////===========================================================
-//// bankers.cpp
-////-----------------------------------------------------------
-//// copyright by William McCarthy
+//// bankers_algorithm.cpp
 ////===========================================================
 //
 #include <iostream>
 #include <fstream>
 #include <cstring>
 #include <initializer_list>
-#include <pthread>
 
 #include "ext_vector.h"
 #include "bank.h"
@@ -85,6 +82,8 @@ void run_customer_bank_tests() {
 }
 //
 //
+#define MAX_ITERATIONS  100
+
 void* runner(void* param) {           // thread runner
   Customer* c = (Customer*)param;
 
@@ -93,10 +92,10 @@ void* runner(void* param) {           // thread runner
   pthread_mutex_unlock(&mutex_);
 
   Bank* b = c->get_bank();
-
+  
   int counter = 0;
 
-  while (!c->needs_met() && counter++ < 100) {
+  while (!c->needs_met() && counter++ < MAX_ITERATIONS) {
     ext_vector<int> req = c->create_req();
     int idx = c->get_id();
     std::cout << "REQUEST of " << req << " for customer " << idx << " ";

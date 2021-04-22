@@ -1,12 +1,10 @@
 //
-//  Bank.h
-//  bankers
+//  bank.h
 //
-//  Created by William McCarthy on 1011//20.
 //
 
-#ifndef bank_h
-#define bank_h
+#ifndef __BANK_H__
+#define __BANK_H__
 
 #include "customer.h"
 
@@ -19,14 +17,21 @@ public:
   ext_vector<int> get_avail() const { return avail; }
   bool is_avail(const ext_vector<int>& req) const { return req < avail; }
   
-  bool is_safe(int id, const ext_vector<int>& req) { return true; }   // TODO: determine if alloc is safe
+  bool is_safe(int id, const ext_vector<int>& req) {   // TODO:  implement check for request not leading to deadlock
+    // grant request (temporarily) to customer
+    // go through list of customers, are there enough resources for at least one customer to get to its max?
+    // roll back request
+    // return anaswer;
+    
+    return true;   // TODO: calculate if it is really safe
+  }
 
   bool req_approved(int id, const ext_vector<int>& req) {
     if (req > avail) { return false; }
 
-    const Customer* c = customers[id];
+    Customer* c = customers[id];
     if (c->needs_exceeded(req)) { return false; }
-
+    
     return is_safe(id, req);
   }
   
