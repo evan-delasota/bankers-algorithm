@@ -29,6 +29,7 @@ public:
       }
       if (work >= customers[i]->create_req()) {
         found = true;
+        break;
       }
     }
 
