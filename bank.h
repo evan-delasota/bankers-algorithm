@@ -17,13 +17,23 @@ public:
   ext_vector<int> get_avail() const { return avail; }
   bool is_avail(const ext_vector<int>& req) const { return req < avail; }
   
-  bool is_safe(int id, const ext_vector<int>& req) {   // TODO:  implement check for request not leading to deadlock
+  bool is_safe(int id, const ext_vector<int>& req) {   
+    bool found = false;
+    ext_vector<int> work = avail;
     // grant request (temporarily) to customer
+    work -= req;
     // go through list of customers, are there enough resources for at least one customer to get to its max?
-    // roll back request
-    // return anaswer;
-    
-    return true;   // TODO: calculate if it is really safe
+    for (auto i = 0; i < avail.size(); ++i) {
+      if (i == id) {
+        continue;
+      }
+      if (work >= customers[i]->create_req()) {
+        found = true;
+      }
+    }
+
+    // return answer;
+    return found; 
   }
 
   bool req_approved(int id, const ext_vector<int>& req) {
